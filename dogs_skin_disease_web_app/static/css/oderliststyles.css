@@ -1,0 +1,244 @@
+/*-----------------------------
+Section: Products List
+----------------------------- */
+:root {
+    --breakpoint-xs: 600px;
+    --breakpoint-sm: 768px;
+    --blue: #318cdd;
+}
+img { max-width: 100%; }
+body {background: #f4f4f4; font-family: sans-serif; }
+
+.mystyle-products {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center-align items */
+}
+
+.product {
+    width: 200px; /* Adjust width for smaller cards */
+    margin: 10px; /* Adjust margin for spacing */
+    padding: 10px; /* Adjust padding for smaller cards */
+    background: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .1); /* Smaller shadow */
+    transition: box-shadow .3s ease;
+    text-align: center; /* Center text and elements */
+}
+
+.product:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, .2);
+}
+
+h3 {
+    font-size: 14px; /* Slightly larger font size for readability */
+    line-height: 20px;
+    margin-top: 10px;
+    height: 39px;
+    overflow: hidden;
+}
+
+.product > a {
+    position: relative;
+    display: block;
+    color: #333;
+    text-decoration: none;
+}
+
+.add_to_cart_button {
+    display: block;
+    margin-top: 10px;
+    padding: 8px; /* Adjust padding */
+    background: #318cdd;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.attachment-shop_catalog {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%; /* Ensure image scales properly */
+}
+
+.btn-circle {
+    border-radius: 50%;
+    width: 25px; /* Smaller button */
+    height: 25px; /* Smaller button */
+    line-height: 25px;
+    display: block;
+    padding: 0;
+    position: absolute;
+    top: 10px; /* Adjust position */
+    left: 10px; /* Adjust position */
+    color: #fff;
+    background: #333;
+    text-align: center;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.product:hover .btn-circle {
+    opacity: 1;
+}
+
+.price {
+    font-size: 12px; /* Smaller font size */
+}
+
+.price ins {
+    text-decoration: none;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.price del {
+    color: #666;
+    font-size: 11px;
+    padding-right: 7px;
+    white-space: nowrap;
+}
+
+.sale-tag {
+    color: blue;
+    font-size: 10px; /* Smaller font size */
+    padding-left: 5px;
+    padding-bottom: 3px;
+    font-weight: 700;
+}
+
+.onsale {
+    z-index: 6;
+    position: absolute;
+    top: 10px; /* Adjust position */
+    left: 10px; /* Adjust position */
+    padding: 0px 8px; /* Adjust padding */
+    background: var(--blue);
+    color: #fff;
+    box-shadow: -1px 2px 3px rgba(0, 0, 0, .3);
+    border-radius: 0 5px 5px 0;
+    height: 20px; /* Smaller height */
+    line-height: 20px;
+    font-size: 0.7rem; /* Smaller font size */
+    font-weight: normal;
+}
+
+/* Container for search box and button */
+.search-container {
+    width: 100%;
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    margin: 20px; /* Margin around the container */
+}
+
+/* Style for the search box */
+.search-box {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    margin-right: 10px; /* Space between the search box and button */
+}
+
+#search {
+    width: 100%;
+    padding: 10px; /* Padding inside the search input */
+    border: 1px solid #ccc; /* Border for the input */
+    border-radius: 4px; /* Rounded corners for the input */
+    font-size: 16px; /* Font size for the input text */
+}
+
+/* Style for the button */
+.search-button {
+    padding: 10px 20px; /* Padding inside the button */
+    background-color: #024996; /* Background color of the button */
+    color: #fff; /* Text color of the button */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners for the button */
+    font-size: 16px; /* Font size for the button text */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Button hover effect */
+.search-button:hover {
+    background-color: #0056b3; /* Darker background color on hover */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.result, .error {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.result {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.error {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+input[type="file"]{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#ClassifyImageBtn {
+    margin:5px auto;
+    padding: 5px;
+    display: none;
+    background-color: #0685ac;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+
+#ClassifyImageBtn :hover {
+    background-color: #31b0d5;
+}
+
+/* Image preview styling */
+.preview-container {
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.preview-container img {
+    max-width: 100%;
+    height: auto;
+    display: none;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add_to_cart_button {
+    color: white;
+    cursor: pointer;
+    /* Other styling for the button can be added here */
+  }

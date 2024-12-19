@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Disease Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 9999;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.8);
+            /* Black background with opacity */
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            /* Adjust width as needed */
+            max-width: 700px;
+        }
+
+        #caption {
+            margin: 10px;
+            color: #ccc;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .about {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .result,
+        .error {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .result {
+            color: #fff;
+        }
+
+        .result-danger {
+            background-color: #ff4d4d;
+            /* Red for dangerous results */
+        }
+
+        .result-warning {
+            background-color: #ff9408;
+            /* Orange for uncertain results */
+        }
+
+        .result-safe {
+            background-color: #9dfb9d;
+            /* Green for safe results */
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+
+        input[type="file"],
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #5bc0de;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #31b0d5;
+        }
+
+        .preview-container {
+            position: relative;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .preview-container img {
+            display: none;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-container-btn {
+            display: none;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        /* Background overlay */
+        .loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 5;
+        }
+
+        /* Loader styling */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            z-index: 10;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* New styles for image layout */
+        .image-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .image-preview {
+            flex: 1;
+            width: 300px;
+            height: auto;
+        }
+
+        .image-gallery {
+            flex: 1;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        }
+
+        .image-gallery img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* Button Styling */
+        .button-green {
+            display: inline-block;
+            /* Make the link behave like a block element */
+            padding: 10px 20px;
+            /* Padding inside the button */
+            font-size: 16px;
+            /* Font size */
+            color: #fff;
+            /* Text color */
+            background-color: #20e44d;
+            /* Green background color */
+            border: none;
+            /* Remove default border */
+            border-radius: 5px;
+            /* Rounded corners */
+            text-align: center;
+            /* Center text alignment */
+            text-decoration: none;
+            /* Remove underline from the link */
+            transition: background-color 0.3s ease;
+            width: 100%;
+            /* Smooth transition for background color */
+        }
+
+        .button-green:hover {
+            background-color: #218838;
+            /* Darker green on hover */
+        }
+
+        /* General styles for the description container */
+        .description {
+            background-color: #f9f9f9;
+            /* Light grey background for contrast */
+            border: 1px solid #ddd;
+            /* Light border for subtle separation */
+            border-radius: 8px;
+            /* Rounded corners for a modern look */
+            padding: 15px;
+            /* Spacing inside the container */
+            margin: 20px 0;
+            /* Margin above and below the container */
+            font-family: Arial, sans-serif;
+            /* Font family for readability */
+            color: #333;
+            /* Dark grey text color for better readability */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Light shadow for depth */
+        }
+
+        /* Styling for paragraph text inside the description */
+        .description p {
+            line-height: 1.6;
+            /* Spacing between lines for readability */
+            font-size: 16px;
+            /* Font size for the paragraph text */
+            margin: 0;
+            /* Remove default margin */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Skin Disease Classifier</h1>
+
+        <div class="about">
+            <p>
+                This web application allows users to classify skin diseases by uploading an image of the affected area.
+                Using advanced deep learning algorithms, the classifier predicts the type of skin disease with a
+                confidence score. The aim is to assist in early detection and recommend further consultation with a
+                healthcare provider.
+            </p>
+        </div>
+        <br>
+        <form id="upload-form" method="POST" enctype="multipart/form-data">
+            <label for="file"><b>Upload Image:</b></label>
+            <input type="file" id="file" name="file" accept="image/*">
+            <div id="preview-container" class="preview-container">
+                <img id="image-preview" src="" alt="Image Preview" style="width: 400px;">
+            </div>
+            <button id="preview-container-btn" class="preview-container-btn hidden" type="submit">Scan the skin image</button>
+        </form>
+
+        <div id="loader-overlay" class="loader-overlay hidden"></div>
+        <div id="loader" class="loader hidden"></div>
+
+        {% if result %}
+        {% if confidence is not none and confidence < 0.60 %} <div class="result result-warning">
+            <p><strong>Predicted Skin Disease:</strong> {{ result }}</p>
+            {% if confidence %}
+            <p><strong>Confidence:</strong> {{ confidence|round(2) }}</p>
+            {% endif %}
+    </div>
+    {% elif result == 'Healthy' %}
+    <div class="result result-safe">
+        <p><strong>Predicted Skin Disease:</strong> {{ result }}</p>
+        {% if confidence %}
+        <p><strong>Confidence:</strong> {{ confidence|round(2) }}</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="result result-danger">
+        <p><strong>Predicted Skin Disease:</strong> {{ result }}</p>
+        {% if confidence %}
+        <p><strong>Confidence:</strong> {{ confidence|round(2) }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if result %}
+    <br>
+    {% if result %}
+    {% if description %}
+    <div class="description">
+        <h2>{{ result }}</h3>
+        <p>{{ description }}</p>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <div style="width: 100%; display: flex;">
+        <div style="width: 50%;">
+            <h3>Originle Image</h3>
+        </div>
+        {% if result != 'Healthy' %}
+        {% if result != 'Uncertain result, please consult a professional.' %}
+        <div style="width: 50%;">
+            <h3>Similar Results</h3>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+    <div class="image-container">
+        {% if img_data %}
+        <div class="image-preview">
+            <img src="data:image/png;base64,{{ img_data }}" alt="Uploaded Image Preview" style="width: 300px;">
+        </div>
+        {% endif %}
+
+        <div class="image-gallery">
+            {% if result == 'Hypersensitivity_allergic_dermatosis' %}
+            <img src="../static/images/Hypersensitivity_Image1.jpg" alt="Hypersensitivity Image 1">
+            <img src="../static/images/Hypersensitivity_Image2.jpg" alt="Hypersensitivity Image 2">
+            <img src="../static/images/Hypersensitivity_Image3.jpg" alt="Hypersensitivity Image 3">
+
+            {% elif result == 'Fungal_infections' %}
+            <img src="../static/images/Fungal_Image1.jpg" alt="Fungal Image 1">
+            <img src="../static/images/Fungal_Image2.jpg" alt="Fungal Image 2">
+            <img src="../static/images/Fungal_Image3.jpg" alt="Fungal Image 3">
+
+            {% elif result == 'Bacterial_dermatosis' %}
+            <img src="../static/images/Bacterial_Image1.jpg" alt="Bacterial Image 1">
+            <img src="../static/images/Bacterial_Image2.jpg" alt="Bacterial Image 2">
+            <img src="../static/images/Bacterial_Image3.jpg" alt="Bacterial Image 3">
+
+            {% elif result == 'Healthy' %}
+            <p style="text-align: center; font-weight: bold; color: rgb(16, 198, 16);">The picture you have entered does
+                not show any disease.</p>
+            {% endif %}
+            {% if result == 'Uncertain result, please consult a professional.' %}
+            <p style="text-align: center; font-weight: bold; color: rgb(181, 12, 12);">Uncertain result, please consult
+                a professional.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if result %}
+    {% if result != 'Healthy' %}
+    <a href="/order?result={{ result }}" class="button-green">Find Medicine</a>
+    {% endif %}
+    {% endif %}
+
+    {% if error %}
+    <div class="error">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    </div>
+
+    <!-- Modal -->
+    <div id="image-modal" class="modal hidden">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modal-image">
+        <div id="caption"></div>
+    </div>
+
+
+    <script>
+        document.getElementById('file').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('image-preview');
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline';
+                    document.getElementById('preview-container-btn').style.display = 'inline';
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Show loader and overlay during the form submission process
+            document.getElementById('preview-container').style.display = 'none';
+            document.getElementById('preview-container-btn').style.display = 'none';
+            const loader = document.getElementById('loader');
+            const overlay = document.getElementById('loader-overlay');
+            loader.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+
+            // Clear previous results
+            const resultDiv = document.querySelector('.result');
+            const img_dataDiv = document.querySelector('.image-container');
+            const errorDiv = document.querySelector('.error');
+            const descriptionDiv = document.querySelector('.description');
+            const buttongreenDiv = document.querySelector('.button-green');
+            if (resultDiv) {
+                resultDiv.style.display = 'none';
+            }
+            if (img_dataDiv) {
+                img_dataDiv.style.display = 'none';
+            }
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+            if (descriptionDiv) {
+                descriptionDiv.style.display = 'none';
+            }
+
+            if (buttongreenDiv) {
+                buttongreenDiv.style.display = 'none';
+            }
+            // Submit the form
+            this.submit();
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Modal elements
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            const captionText = document.getElementById('caption');
+            const closeBtn = document.getElementsByClassName('close')[0];
+
+            // Add click event to each image in the gallery
+            document.querySelectorAll('.image-gallery img').forEach(img => {
+                img.addEventListener('click', function () {
+                    modal.style.display = 'block';
+                    modalImg.src = this.src;
+                    captionText.innerHTML = this.alt; // Optional: set image description
+                });
+            });
+
+            // Close the modal when the user clicks on the close button
+            closeBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Close the modal when the user clicks anywhere outside of the modal
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

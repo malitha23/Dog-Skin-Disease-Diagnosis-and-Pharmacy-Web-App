@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="auth-token" content="{{ token }}">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .navbar {
+            background-color: #5e9bf6;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .containerOrders {
+            padding: 20px;
+            max-width: 90%;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            line-height: 1.6;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .user-info p strong {
+            color: #333;
+        }
+
+        .logout-button {
+            background-color: #41ccb0;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+            margin-bottom: 60px;
+        }
+
+        .orders-table th,
+        .orders-table td {
+            background-color: #4b94a8;
+            border: 1px solid #ddd;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .orders-table th {
+            background-color: #0bb5e9;
+        }
+
+        .orders-table td {
+            vertical-align: top;
+        }
+
+        .orders-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table table th,
+        .orders-table table td {
+            border: none;
+            padding: 5px;
+        }
+
+        .approve-button {
+            background-color: #28a745;
+            /* Green color */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .rejected-button {
+            background-color: #d80909;
+            /* Green color */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 3px;
+        }
+
+        .approve-button:hover {
+            background-color: #218838;
+            /* Darker green on hover */
+        }
+
+        .rejected-button:hover {
+            background-color: #df0303;
+            /* Darker green on hover */
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 20px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .navbar span {
+                margin-bottom: 10px;
+            }
+
+            .user-info p {
+                font-size: 16px;
+            }
+
+            .logout-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+    <script>
+        function confirmLogout(event) {
+            if (!confirm("Are you sure you want to logout?")) {
+                event.preventDefault();  // Prevent form submission if the user cancels
+            }
+        }
+
+        function formatDateTime(datetime) {
+            const date = new Date(datetime);
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+
+        // Function to fetch and display orders
+        async function fetchOrders() {
+            try {
+                const token = document.querySelector('meta[name="auth-token"]').getAttribute('content');
+
+                const response = await fetch('http://127.0.0.1:3000/api/ordersRoutes/stafforders', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                // Clear existing rows in all tables
+                document.getElementById('pending-orders-table-body').innerHTML = '';
+                document.getElementById('approved-orders-table-body').innerHTML = '';
+                document.getElementById('rejected-orders-table-body').innerHTML = '';
+
+                data.forEach(order => {
+                    const orderItems = order.OrderItems.map(item => `
+        <tr>
+            <td>${item.item_name}</td>
+            <td>${item.item_price}</td>
+            <td>${item.item_quantity}</td>
+        </tr>
+    `).join('');
+
+                    const approveButton = order.status === 'pending' ? `
+        <button class="approve-button" data-order-id="${order.id}">Approve</button>
+    ` : `<label>${order.status}</label>
+    `;
+
+    const rejectButton = order.status === 'pending' ? `
+        <button class="rejected-button" data-order-id="${order.id}">Rejecte</button>
+    ` : '';
+                    const formattedDate = formatDateTime(order.created_at);
+
+                    const row = `
+        <tr>
+            <td>${order.id}</td>
+            <td>${order.first_name} ${order.last_name}</td>
+            <td>${order.username}</td>
+            <td>${order.address}</td>
+            <td>${order.phone_number}</td>
+            <td>${order.email}</td>
+            <td>${order.delivery_option}</td>
+            <td>${order.payment_option}</td>
+            <td>${order.total_amount}</td>
+            <td id="status">${approveButton} ${rejectButton}</td>
+            <td>${formattedDate}</td>
+            <td>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Item Price</th>
+                            <th>Item Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${orderItems}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    `;
+
+                    if (order.status === 'pending') {
+                        document.getElementById('pending-orders-table-body').innerHTML += row;
+                    } else if (order.status === 'confirmed') {
+                        document.getElementById('approved-orders-table-body').innerHTML += row;
+                    } else if (order.status === 'rejected') {
+                        document.getElementById('rejected-orders-table-body').innerHTML += row;
+                    }
+                });
+
+                // Add event listener for the approve buttons
+                document.querySelectorAll('.approve-button').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const orderId = event.target.getAttribute('data-order-id');
+                        await approveOrder(orderId, 'confirmed');
+                    });
+                });
+
+                document.querySelectorAll('.rejected-button').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const orderId = event.target.getAttribute('data-order-id');
+                        await approveOrder(orderId, 'rejected');
+                    });
+                });
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+
+        // Function to handle the approval of an order
+        async function approveOrder(orderId, status) {
+            try {
+                const token = document.querySelector('meta[name="auth-token"]').getAttribute('content');
+
+                const response = await fetch(`http://127.0.0.1:3000/api/ordersRoutes/update/${orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: status })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if(status == "approved"){
+                    alert('Order approved successfully');
+                    }else{
+                    alert('Order rejected successfully');
+                    }
+                    // Optionally, refresh the orders table or take other actions
+                    fetchOrders();
+                } else {
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error approving order:', error);
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', fetchOrders);
+    </script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div>
+            <span>Welcome, {{ user["first_name"] }}!</span>
+        </div>
+        <div>
+            <a href="/homepage">Main</a>
+            {% if user["role"] == "admin" %}
+            <a href="/adminpage" style="margin-left: 30px;">Details</a>
+            {% else %}
+            <a href="/profile" style="margin-left: 30px;">Details</a>
+            {% endif %}
+            <a href="#orders" onclick="toggleOrdersTable()">Orders</a>
+            <a href="/UserManagementforadmin">Manage Users</a>
+            <a href="/ItemManagement">Manage Items</a>
+        </div>
+        <div>
+            <form action="{{ url_for('logout') }}" method="POST" style="display: inline;"
+                onsubmit="confirmLogout(event)">
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="container">
+        <h1>User Information</h1>
+        <div class="user-info">
+            <p><strong>Username:</strong> {{ user["username"] }}</p>
+            <p><strong>Email:</strong> {{ user["email"] }}</p>
+            <p><strong>First Name:</strong> {{ user["first_name"] }}</p>
+            <p><strong>Last Name:</strong> {{ user["last_name"] }}</p>
+            <p><strong>Phone Number:</strong> {{ user["phone_number"] }}</p>
+            <p><strong>Address:</strong> {{ user["address"] }}</p>
+            <p><strong>Role:</strong> {{ user["role"] }}</p>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="containerOrders" id="orders">
+        <h2>Manage Orders</h2>
+
+        <!-- Table for Pending Orders -->
+        <h3>Pending Orders</h3>
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Username</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Delivery Option</th>
+                    <th>Payment Option</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Order Items</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="pending-orders-table-body">
+                <!-- Rows will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Table for Approved Orders -->
+        <h3>Approved Orders</h3>
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Username</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Delivery Option</th>
+                    <th>Payment Option</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Order Items</th>
+                </tr>
+            </thead>
+            <tbody id="approved-orders-table-body">
+                <!-- Rows will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Table for Rejected Orders -->
+        <h3>Rejected Orders</h3>
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Username</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Delivery Option</th>
+                    <th>Payment Option</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Order Items</th>
+                </tr>
+            </thead>
+            <tbody id="rejected-orders-table-body">
+                <!-- Rows will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+  
+
+</body>
+
+</html>

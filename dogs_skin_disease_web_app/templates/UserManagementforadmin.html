@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="auth-token" content="{{ token }}">
+    <title>User Management</title>
+    <link rel="stylesheet" href="../static/css/UserManagementforadmin.css">
+</head>
+<body>
+    <h1>User Management</h1>
+
+    <!-- Table for users with status 1 -->
+    <h2>Active Users</h2>
+    <table id="active-users-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Active user rows will be dynamically generated -->
+        </tbody>
+    </table>
+
+    <!-- Table for users with status -1 -->
+    <h2>Suspended Users</h2>
+    <table id="suspended-users-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Suspended user rows will be dynamically generated -->
+        </tbody>
+    </table>
+
+    <script src="../static/js/UserManagementforadmin.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="auth-token" content="{{ token }}">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        .navbar {
+            background-color: #5e9bf6;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            line-height: 1.6;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .user-info p strong {
+            color: #333;
+        }
+
+        .logout-button {
+            background-color: #41ccb0;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 20px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .navbar span {
+                margin-bottom: 10px;
+            }
+
+            .user-info p {
+                font-size: 16px;
+            }
+
+            .logout-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+    <script>
+        function confirmLogout(event) {
+            if (!confirm("Are you sure you want to logout?")) {
+                event.preventDefault();  // Prevent form submission if the user cancels
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div>
+            <span>Welcome, {{ user["first_name"] }}!</span>
+        </div>
+        <div>
+            <a href="/homepage" style="margin-left: 30px;">Main</a>
+            {% if user["role"] == "admin" %}
+            <a href="/adminpage" style="margin-left: 30px;">Details</a>
+            {% else %}
+            <a href="/profile" style="margin-left: 30px;">Details</a>
+            {% endif %}
+            <a href="" style="margin-left: 30px;">Orders</a>
+            <a href="" style="margin-left: 30px;">Manage</a>
+        </div>
+        <div>
+            <form action="{{ url_for('logout') }}" method="POST" style="display: inline;" onsubmit="confirmLogout(event)">
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="container">
+        <h1>User Information</h1>
+        <div class="user-info">
+            <p><strong>Username:</strong> {{ user["username"] }}</p>
+            <p><strong>Email:</strong> {{ user["email"] }}</p>
+            <p><strong>First Name:</strong> {{ user["first_name"] }}</p>
+            <p><strong>Last Name:</strong> {{ user["last_name"] }}</p>
+            <p><strong>Phone Number:</strong> {{ user["phone_number"] }}</p>
+            <p><strong>Address:</strong> {{ user["address"] }}</p>
+            <p><strong>Role:</strong> {{ user["role"] }}</p>
+        </div>
+    </div>
+</body>
+</html>

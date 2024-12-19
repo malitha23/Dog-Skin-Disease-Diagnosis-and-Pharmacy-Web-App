@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      width: 80%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .cart-item img {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 8px;
+      margin-right: 20px;
+    }
+    .cart-item-details {
+      flex-grow: 1;
+    }
+    .cart-item-details h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #555;
+    }
+    .cart-item-details span {
+      display: block;
+      margin-top: 5px;
+      font-size: 16px;
+      color: #333;
+    }
+    .cart-item input {
+      width: 60px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .total-price {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 20px;
+    }
+    .checkout-button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    .checkout-button:hover {
+      background-color: #0056b3;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .form-group button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Your Checkout</h1>
+    <div id="cart-item" class="cart-item">
+      <img id="cart-item-image" src="" alt="Product Image">
+      <div class="cart-item-details">
+        <h3 id="cart-item-name"></h3>
+        <span>Rs <span id="cart-item-price"></span></span>
+        <div>
+          Quantity: 
+          <input type="number" id="cart-item-quantity" min="1" value="1">
+        </div>
+      </div>
+      <div class="total-price">
+        Total: Rs <span id="total-price">0</span>
+      </div>
+    </div>
+    <div class="container">
+      <h1>Billing Form</h1>
+      <form id="checkout-form">
+        <div class="form-group">
+          <label for="first_name">First Name:</label>
+          <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+        </div>
+        <div class="form-group">
+          <label for="last_name">Last Name:</label>
+          <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" value="{{ user.username }}" required>
+        </div>
+        <div class="form-group">
+          <label for="address">Address:</label>
+          <input type="text" id="address" name="address" value="{{ user.address }}" required>
+        </div>
+        <div class="form-group">
+          <label for="phone_number">Phone Number:</label>
+          <input type="text" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" value="{{ user.email }}">
+        </div>
+        <div class="form-group">
+          <label for="delivery_option">Delivery Option:</label>
+          <select id="delivery_option" name="delivery_option" required>
+            <option value="pickup" {% if user.delivery_option == 'pickup' %}selected{% endif %}>Pickup</option>
+            <option value="delivery" {% if user.delivery_option == 'delivery' %}selected{% endif %}>Delivery</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="payment_option">Payment Option:</label>
+          <select id="payment_option" name="payment_option" required>
+            <option value="cash" {% if user.payment_option == 'cash' %}selected{% endif %}>Cash</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="submit">Place Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="../static/js/cart.js"></script>
+</body>
+</html>

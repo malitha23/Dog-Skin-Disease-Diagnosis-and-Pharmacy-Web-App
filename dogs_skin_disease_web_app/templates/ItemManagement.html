@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="auth-token" content="{{ token }}">
+    <title>Item and Category Management</title>
+    
+    <link rel="stylesheet" href="../static/css/ItemManagement.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/adminpage">Main Page</a></li>
+            <li><a href="#create-item">Create Item</a></li>
+            <li><a href="#create-category">Create Category</a></li>
+            <li><a href="#items">Items</a></li>
+            <li><a href="#categories">Categories</a></li>
+        </ul>
+    </nav>
+
+    <h1>Item and Category Management</h1>
+
+    <!-- Form for creating or updating an item -->
+    <section id="create-item">
+        <h2>Create Item</h2>
+        <form id="item-form" enctype="multipart/form-data">
+            <input type="hidden" id="item-id" name="id">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" required>
+            <label for="category">Category:</label>
+            <select id="category" name="category_id" required>
+                <!-- Options will be populated here by JavaScript -->
+            </select>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea>
+            <label for="howtouse">How to Use:</label>
+            <textarea id="howtouse" name="howtouse"></textarea>
+            <label for="expdate">Expiration Date:</label>
+            <input type="date" id="expdate" name="expdate">
+            <label for="mfd">Manufacturing Date:</label>
+            <input type="date" id="mfd" name="mfd">
+            <label for="image">Image:</label>
+            <input type="file" id="image" name="image">
+            <button type="submit">Save Item</button>
+        </form>
+    </section>
+
+    <!-- Form for creating a category -->
+    <section id="create-category">
+        <h2>Create Category</h2>
+        <form id="category-form">
+            <label for="category-name">Name:</label>
+            <input type="text" id="category-name" name="name" required>
+            <label for="category-description">Description:</label>
+            <textarea id="category-description" name="description"></textarea>
+            <button type="submit">Save Category</button>
+        </form>
+    </section>
+
+    <!-- Tables for displaying items and categories -->
+    <section id="items">
+        <h2>Items</h2>
+        <table id="items-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>How to Use</th>
+                    <th>Expiration Date</th>
+                    <th>Manufacturing Date</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section id="categories">
+        <h2>Categories</h2>
+        <table id="categories-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <!-- Modal Structure -->
+<div id="edit-item-modal" class="modal">
+    <div class="modal-content">
+        <h4>Edit Item</h4>
+        <form id="item-updateform">
+            <input type="hidden" id="item-updateid" name="id">
+            <div class="input-field">
+                <label for="name">Name</label>
+                <input type="text" id="nameupdate" name="name" required>
+            </div>
+            <div class="input-field">
+                <label for="price">Price</label>
+                <input type="number" id="priceupdate" name="price" required>
+            </div>
+            <div class="input-field">
+                <label for="category">Category</label>
+                <select id="categoryupdate" name="category" required></select>
+            </div>
+            <div class="input-field">
+                <label for="description">Description</label>
+                <textarea id="descriptionupdate" name="description"></textarea>
+            </div>
+            <div class="input-field">
+                <label for="howtouse">How to Use</label>
+                <textarea id="howtouseupdate" name="howtouse"></textarea>
+            </div>
+            <div class="input-field">
+                <label for="expdate">Expiry Date</label>
+                <input type="date" id="expdateupdate" name="expdate">
+            </div>
+            <div class="input-field">
+                <label for="mfd">Manufacturing Date</label>
+                <input type="date" id="mfdupdate" name="mfd">
+            </div>
+            <div class="input-field">
+                <label for="image">Image</label>
+                <div>
+                    <img id="image-preview" src="" alt="Item Image" style="max-width: 100px; display: block;">
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn">Update</button>
+                <button type="button" class="btn modal-close">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+    <script src="../static/js/ItemManagement.js"></script>
+</body>
+</html>
